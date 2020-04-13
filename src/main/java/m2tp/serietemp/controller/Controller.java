@@ -2,6 +2,7 @@ package m2tp.serietemp.controller;
 
 import java.util.List;
 
+import m2tp.serietemp.models.Comment;
 import m2tp.serietemp.models.Event;
 import m2tp.serietemp.models.Serie;
 import m2tp.serietemp.services.*;
@@ -16,6 +17,9 @@ public class Controller {
 
     @Autowired
     private IEventService eventService;
+
+    @Autowired
+    private ICommentService commentService;
 
     @RequestMapping("/series")
     public List<Serie> findSeries(){
@@ -64,5 +68,25 @@ public class Controller {
     @PutMapping(path = "/events/{id}", consumes = "application/json", produces = "application/json")
     public void editEvent(@PathVariable Long id, @RequestBody Event event){
         eventService.editEvent(id,event.getDescription(),event.getTag());
+    }
+
+    @RequestMapping(path = "/comments")
+    public List<Comment> findComments () {
+        return commentService.getAll();
+    }
+
+    @RequestMapping(path = "/comments/{id}")
+    public Comment findComment (@PathVariable Long id) {
+        return commentService.findById(id);
+    }
+
+    @PostMapping(path = "/comments", consumes = "application/json", produces = "application/json")
+    public void addComment (@RequestBody Comment comment) {
+        commentService.addComment(comment.getText(), comment.getEventId());
+    }
+
+    @DeleteMapping(path = "/comments/{id}")
+    public void removeComment (@PathVariable Long id) {
+        commentService.deleteComment(id);
     }
 }
