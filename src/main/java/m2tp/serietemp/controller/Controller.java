@@ -94,4 +94,9 @@ public class Controller {
     public List<Event> getSerieEvents(@PathVariable Long id) {
         return serieService.getEvents(id);
     }
+    
+    @RequestMapping(path = "events/{id}/comments")
+    public List<Comment> getEventComments(@PathVariable Long id) {
+        return eventService.getComments(id);
+    }
 }
