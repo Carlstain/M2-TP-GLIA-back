@@ -2,6 +2,7 @@ package m2tp.serietemp.services;
 
 import java.util.List;
 
+import m2tp.serietemp.models.Event;
 import m2tp.serietemp.models.Serie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -51,5 +52,12 @@ public class SerieService implements ISerieService {
             req = "UPDATE SERIES SET DESCRIPTION="+description+" WHERE ID="+id;
         }
         jdbctemp.execute(req);
+    }
+
+    @Override
+    public List<Event> getEvents(Long id) {
+        String req = "SELECT * FROM EVENTS WHERE SERIEID=" +id;
+        List<Event> events = jdbctemp.query(req, new BeanPropertyRowMapper(Event.class));
+        return events;
     }
 }

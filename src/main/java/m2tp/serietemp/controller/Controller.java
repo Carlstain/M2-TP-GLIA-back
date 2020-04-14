@@ -89,4 +89,14 @@ public class Controller {
     public void removeComment (@PathVariable Long id) {
         commentService.deleteComment(id);
     }
+
+    @RequestMapping(path = "series/{id}/events")
+    public List<Event> getSerieEvents(@PathVariable Long id) {
+        return serieService.getEvents(id);
+    }
+    
+    @RequestMapping(path = "events/{id}/comments")
+    public List<Comment> getEventComments(@PathVariable Long id) {
+        return eventService.getComments(id);
+    }
 }

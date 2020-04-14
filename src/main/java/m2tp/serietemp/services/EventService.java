@@ -1,6 +1,7 @@
 package m2tp.serietemp.services;
 import java.util.List;
 
+import m2tp.serietemp.models.Comment;
 import m2tp.serietemp.models.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -51,5 +52,12 @@ public class EventService implements IEventService{
             req = "UPDATE EVENTS SET DESCRIPTION="+description+" WHERE ID="+id;
         }
         jdbctemp.execute(req);
+    }
+
+    @Override
+    public List<Comment> getComments(Long id) {
+        String req = "SELECT * FROM COMMENTS WHERE EVENTID="+id;
+        List<Comment> comments = jdbctemp.query(req, new BeanPropertyRowMapper(Comment.class));
+        return comments;
     }
 }
