@@ -1,8 +1,0 @@
-server:
-  port: 8001
-spring:
-  datasource:
-    platform: users
-    driverClassName: org.h2.Driver
-    url : jdbc:h2:file:./src/main/resources/static/users
-  jpa.hibernate.ddl-auto: update

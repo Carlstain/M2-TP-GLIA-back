@@ -25,9 +25,12 @@ public class SharedSeriesService implements ISharedSeriesService{
 
     @Override
     public void shareSerie(Long userid, Long serieId, String permission) {
-        String req = "INSERT INTO SHARED (USERID, SERIEID, PERMISSION) VALUES ("+
-                userid+","+serieId+",'"+ Permissions.valueOf(permission) +"')";
-        jdbcTemplate.execute(req);
+        String test = "INSERT INTO SHARED (USERID, SERIEID, PERMISSION) " +
+        "SELECT " + userid + "," + serieId + ",'"+ Permissions.valueOf(permission) + "' " +
+        "WHERE NOT EXISTS (SELECT 1 FROM SHARED  WHERE USERID="+userid+" AND SERIEID="+serieId+")";
+        /*String req = "INSERT INTO SHARED (USERID, SERIEID, PERMISSION) VALUES ("+
+                userid+","+serieId+",'"+ Permissions.valueOf(permission) +"')";*/
+        jdbcTemplate.execute(test);
     }
 
     @Override
@@ -37,7 +40,7 @@ public class SharedSeriesService implements ISharedSeriesService{
     }
 
     @Override
-    public void privatiseSerie(Long serieId) {
+    public void privatizeSerie(Long serieId) {
         String req = "DELETE FROM SHARED WHERE SERIEID="+serieId;
         jdbcTemplate.execute(req);
     }
