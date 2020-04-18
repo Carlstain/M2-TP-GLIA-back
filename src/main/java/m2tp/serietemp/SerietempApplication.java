@@ -2,23 +2,30 @@ package m2tp.serietemp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import java.util.Collections;
 
-@SpringBootApplication
+@Configuration
+@EnableCaching
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
 public class SerietempApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SerietempApplication.class, args);
-    }
     // Fix the CORS errors
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Bean
     public FilterRegistrationBean simpleCorsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -32,5 +39,9 @@ public class SerietempApplication {
         FilterRegistrationBean bean = new FilterRegistrationBean<>(new CorsFilter(source));
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
+    }
+    public static void main(String[] args) {
+        System.setProperty("spring.config.name", "serietemp");
+        SpringApplication.run(SerietempApplication.class, args);
     }
 }
