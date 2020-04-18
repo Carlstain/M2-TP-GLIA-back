@@ -1,11 +1,11 @@
+import authserver.SecurityConfiguration;
 import m2tp.serietemp.SerietempApplication;
-import sharedseries.SharedseriesApplication;
-import users.UsersApplication;
+import users_shares.UsersSharesApplication;
 
 public class Main {
     public static void main(String[] args) {
+        SecurityConfiguration.main(args);
         SerietempApplication.main(args);
-        UsersApplication.main(args);
-        SharedseriesApplication.main(args);
+        UsersSharesApplication.main(args);
     }
 }

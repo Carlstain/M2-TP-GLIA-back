@@ -1,0 +1,7 @@
+server:
+  port: 8080
+okta:
+  oauth2:
+    issuer: https://dev-243545.okta.com
+    client-id: 0oa973d5sFGMK35ED4x6
+    client-secret: zBCwvkupYwDl9OBjcLSpEOPrkPJewsAqTHYMoBqO
