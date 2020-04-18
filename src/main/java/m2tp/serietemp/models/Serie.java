@@ -4,15 +4,17 @@ public class Serie {
     private Long id;
     private String title;
     private String description;
+    private Long userid;
 
     public Serie() {
 
     }
 
-    public Serie(Long id, String title, String description){
+    public Serie(Long id, String title, String description, Long userid){
         this.id = id;
         this.title = title;
         this.description = description;
+        this.userid = userid;
     }
 
     public String getDescription() {
@@ -37,5 +39,14 @@ public class Serie {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+
+    public Long getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Long userid) {
+        this.userid = userid;
     }
 }

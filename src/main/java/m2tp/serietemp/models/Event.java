@@ -1,18 +1,22 @@
 package m2tp.serietemp.models;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 public class Event {
 
     private Long id;
-    private String description;
+    private Double record;
     private Long serieId;
-    private String tag;
-    private Long moment;
+    private Date moment = new Date();
 
-    public Long getMoment() {
+    private String comment;
+
+    public Date getMoment() {
         return moment;
     }
 
-    public void setMoment(Long moment) {
+    public void setMoment(Date moment) {
         this.moment = moment;
     }
 
@@ -24,12 +28,12 @@ public class Event {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public Double getRecord() {
+        return record;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setRecord(Double record) {
+        this.record = record;
     }
 
     public Long getSerieId() {
@@ -40,11 +44,11 @@ public class Event {
         this.serieId = serieId;
     }
 
-    public String getTag() {
-        return tag;
+    public String getComment() {
+        return comment;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

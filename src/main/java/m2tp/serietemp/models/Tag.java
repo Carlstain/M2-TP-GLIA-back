@@ -1,16 +1,16 @@
 package m2tp.serietemp.models;
 
-public class Comment {
-    private String text;
+public class Tag {
+    private String val;
     private Long id;
     private Long eventId;
 
-    public String getText() {
-        return text;
+    public String getVal() {
+        return val;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setVal(String val) {
+        this.val = val;
     }
 
     public Long getId() {
