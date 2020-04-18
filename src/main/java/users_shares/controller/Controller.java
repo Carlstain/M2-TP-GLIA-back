@@ -1,7 +1,8 @@
-package sharedseries.controller;
+package users_shares.controller;
 
-import sharedseries.models.*;
-import sharedseries.services.*;
+import m2tp.serietemp.models.Serie;
+import users_shares.models.*;
+import users_shares.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,9 @@ import java.util.List;
 public class Controller {
     @Autowired
     private ISharedSeriesService sharedSeriesService;
+
+    @Autowired
+    private IUserService userService;
 
     @RequestMapping(path = "/share")
     public List<SharedSerie> getShared() {
@@ -31,5 +35,22 @@ public class Controller {
     @DeleteMapping(path = "/share/{serieid}")
     public void privatize(@PathVariable Long serieid) {
         sharedSeriesService.privatizeSerie(serieid);
+    }
+
+    @RequestMapping(path = "/users")
+    public List<User> getAllUsers(@RequestParam(name = "name", required = false) String name) {
+        if(name != null)
+            return userService.findByUserName(name);
+        return userService.getAll();
+    }
+
+    @RequestMapping(path = "/users/{id}")
+    public List<User> getUserById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
+    @PostMapping(path = "/users", consumes = "application/json", produces = "application/json")
+    public void creatUser(@RequestBody User user) {
+        userService.createUser(user.getUsername(), user.getPassword());
     }
 }

@@ -1,4 +1,4 @@
-package m2tp.serietemp.models;
+package users_shares.models;
 
 public class User {
     private long id;

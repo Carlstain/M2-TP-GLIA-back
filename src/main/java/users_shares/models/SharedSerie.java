@@ -1,4 +1,4 @@
-package sharedseries.models;
+package users_shares.models;
 
 public class SharedSerie {
     private Long id;

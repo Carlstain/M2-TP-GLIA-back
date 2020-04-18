@@ -1,6 +1,6 @@
-package sharedseries.services;
+package users_shares.services;
 
-import sharedseries.models.SharedSerie;
+import users_shares.models.SharedSerie;
 
 import java.util.List;
 

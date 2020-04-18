@@ -1,4 +1,4 @@
-package sharedseries.models;
+package users_shares.models;
 
 public enum Permissions {
     Read,

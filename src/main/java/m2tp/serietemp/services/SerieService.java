@@ -5,6 +5,8 @@ import java.util.List;
 import m2tp.serietemp.models.Event;
 import m2tp.serietemp.models.Serie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,7 +34,14 @@ public class SerieService implements ISerieService {
     }
 
     @Override
-    @Cacheable("serie")
+    @Cacheable("userseries")
+    public List<Serie> getUserSeries(Long userid) {
+        String req = "SELECT * FROM SERIES WHERE USERID="+userid;
+        List<Serie> series = jdbctemp.query(req, new BeanPropertyRowMapper(Serie.class));
+        return series;
+    }
+
+    @Override
     public Serie findById(Long id){
         String req = "SELECT * FROM SERIES WHERE ID=?";
         Serie serie = (Serie) jdbctemp.queryForObject(req, new Object[]{id},
@@ -41,18 +50,21 @@ public class SerieService implements ISerieService {
     }
 
     @Override
+    @CacheEvict(cacheNames = {"series"}, allEntries = true)
     public void insertSerie(String title, String description, Long userid){
         String req = "INSERT INTO SERIES (TITLE, DESCRIPTION, USERID) VALUES ("+this.mapInsertNullColumn(title)+","+this.mapInsertNullColumn(description)+","+userid+")";
         jdbctemp.execute(req);
     }
 
     @Override
+    @CacheEvict(cacheNames = {"series"}, allEntries = true)
     public void removeSerie(Long id) {
         String req = "DELETE FROM SERIES WHERE ID="+id;
         jdbctemp.execute(req);
     }
 
     @Override
+    @CacheEvict(cacheNames = {"serie"}, allEntries = true)
     public void editSerie(Long id, String title, String description){
         String parsed = (this.mapUpdateNullColumn("TITLE",title) +
                         this.mapUpdateNullColumn("DESCRIPTION",description));
@@ -62,7 +74,7 @@ public class SerieService implements ISerieService {
     }
 
     @Override
-    @Cacheable("events")
+    @Cacheable("serieevents")
     public List<Event> getEvents(Long id) {
         String req = "SELECT * FROM EVENTS WHERE SERIEID=" +id;
         List<Event> events = jdbctemp.query(req, new BeanPropertyRowMapper(Event.class));

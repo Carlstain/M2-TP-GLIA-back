@@ -8,13 +8,3 @@ spring:
     driverClassName: org.h2.Driver
     url : jdbc:h2:file:./src/main/resources/static/series
   jpa.hibernate.ddl-auto: update
-  security:
-    oauth2:
-      client:
-        registration:
-          okta:
-            client-id:  00u95x2vebVsNC3eJ4x6
-            client-secret: zBCwvkupYwDl9OBjcLSpEOPrkPJewsAqTHYMoBqO
-        provider:
-          okta:
-            issuer-uri: https://dev-243545-admin.okta.com/oauth2/default

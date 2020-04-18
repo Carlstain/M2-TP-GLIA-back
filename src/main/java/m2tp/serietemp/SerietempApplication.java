@@ -16,15 +16,10 @@ import java.util.Collections;
 
 @Configuration
 @EnableCaching
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
+@SpringBootApplication
 public class SerietempApplication {
 
     // Fix the CORS errors
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public FilterRegistrationBean simpleCorsFilter() {

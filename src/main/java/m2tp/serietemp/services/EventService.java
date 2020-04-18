@@ -5,6 +5,7 @@ import java.util.List;
 
 import m2tp.serietemp.models.Event;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +32,6 @@ public class EventService implements IEventService{
     }
 
     @Override
-    @Cacheable("event")
     public Event findById(Long id) {
         String req = "SELECT * FROM EVENTS WHERE ID=?";
         Event event = (Event) jdbctemp.queryForObject(req, new Object[]{id},
@@ -40,6 +40,7 @@ public class EventService implements IEventService{
     }
 
     @Override
+    @CacheEvict(cacheNames = {"events"}, allEntries = true)
     public void insertEvent(Long serieId, Date moment, Double record, String comment){
         String req = "INSERT INTO EVENTS (MOMENT, RECORD, COMMENT, SERIEID) VALUES " +
                 "('"+ new Timestamp(moment.getTime()) +"',"+record +","+this.mapInsertNullColumn(comment)+","+serieId+")";
@@ -47,12 +48,14 @@ public class EventService implements IEventService{
     }
 
     @Override
+    @CacheEvict(cacheNames = {"events"}, allEntries = true)
     public void removeEvent(Long id) {
         String req = "DELETE FROM EVENTS WHERE ID="+id;
         jdbctemp.execute(req);
     }
 
     @Override
+    @CacheEvict(cacheNames = {"events"}, allEntries = true)
     public void editEvent(Long id, Double record, String comment) {
         String parsed = (this.mapUpdateNullColumn("RECORD",record) +
                 this.mapUpdateNullColumn("COMMENT",comment));

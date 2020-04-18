@@ -1,8 +1,7 @@
 package m2tp.serietemp.controller;
 
-import java.util.Date;
 import java.util.List;
-import java.sql.Timestamp;
+
 import m2tp.serietemp.models.*;
 import m2tp.serietemp.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +19,22 @@ public class Controller {
     @Autowired
     private ITagService tagService;
 
-    @Autowired
-    private IUserService userService;
-
     @RequestMapping("/series")
-    public List<Serie> findSeries(){
+    public List<Serie> findSeries(@RequestParam(name = "userid", required = false) Long userid){
+        if (userid != null)
+            return  serieService.getUserSeries(userid);
         return serieService.getAll();
     }
+
     @RequestMapping("/series/{id}")
     public Serie findSerie(@PathVariable Long id){
         return serieService.findById(id);
     }
 
     @PostMapping(path = "/series", consumes = "application/json", produces = "application/json")
-    public void addSerie(@RequestBody Serie serie){
+    public Serie addSerie(@RequestBody Serie serie){
         serieService.insertSerie(serie.getTitle(),serie.getDescription(),serie.getUserid());
+        return serie;
     }
 
     @DeleteMapping(path = "/series/{id}")
@@ -108,27 +108,5 @@ public class Controller {
     @RequestMapping(path = "series/{id}/events")
     public List<Event> getSerieEvents(@PathVariable Long id) {
         return serieService.getEvents(id);
-    }
-
-    @RequestMapping(path = "/users")
-    public List<User> getAllUsers(@RequestParam(name = "name", required = false) String name) {
-        if(name != null)
-            return userService.findByUserName(name);
-        return userService.getAll();
-    }
-
-    @RequestMapping(path = "/users/{id}")
-    public List<User> getUserById(@PathVariable Long id) {
-        return userService.findById(id);
-    }
-
-    @RequestMapping(path = "/users/{id}/series")
-    public List<Serie> getUserSeries (@PathVariable Long id){
-        return userService.getSeries(id);
-    }
-
-    @PostMapping(path = "/users", consumes = "application/json", produces = "application/json")
-    public void creatUser(@RequestBody User user) {
-        userService.createUser(user.getUsername(), user.getPassword());
     }
 }

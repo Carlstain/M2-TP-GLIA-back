@@ -1,12 +1,12 @@
-package sharedseries.services;
+package users_shares.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import sharedseries.models.Permissions;
-import sharedseries.models.SharedSerie;
+import users_shares.models.Permissions;
+import users_shares.models.SharedSerie;
 
 import java.util.List;
 

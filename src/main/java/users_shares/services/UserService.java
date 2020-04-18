@@ -1,13 +1,12 @@
-package m2tp.serietemp.services;
+package users_shares.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import m2tp.serietemp.models.User;
-import m2tp.serietemp.models.Serie;
+import users_shares.models.User;
 import java.util.List;
 
 @Service
@@ -15,10 +14,8 @@ public class UserService implements  IUserService{
     @Autowired
     JdbcTemplate jdbctemp;
 
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Override
+    @Cacheable("users")
     public List<User> getAll() {
         String req = "SELECT * FROM USERS";
         List<User> users = jdbctemp.query(req, new BeanPropertyRowMapper(User.class));
@@ -37,16 +34,10 @@ public class UserService implements  IUserService{
     }
 
     @Override
-    public List<Serie> getSeries(Long id) {
-        String req = "SELECT * FROM SERIES WHERE USERID=" + id;
-        List<Serie> series = jdbctemp.query(req, new BeanPropertyRowMapper(Serie.class));
-        return series;
-    }
-
-    @Override
+    @CacheEvict(cacheNames = {"users"}, allEntries = true)
     public void createUser(String username, String password) {
         String req = "INSERT INTO USERS (USERNAME, PASSWORD) VALUES ('"+username+"','"+
-                bCryptPasswordEncoder.encode(password)+"')";
+                password+"')";
         jdbctemp.execute(req);
     }
 }
