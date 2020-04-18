@@ -4,9 +4,9 @@ server:
 # temporary data storage
 spring:
   datasource:
-    platform: h2
+    platform: series
     driverClassName: org.h2.Driver
-    url : jdbc:h2:file:./src/main/resources/static/database
+    url : jdbc:h2:file:./src/main/resources/static/series
   jpa.hibernate.ddl-auto: update
   security:
     oauth2:
