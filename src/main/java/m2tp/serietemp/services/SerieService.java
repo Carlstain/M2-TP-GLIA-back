@@ -5,6 +5,7 @@ import java.util.List;
 import m2tp.serietemp.models.Event;
 import m2tp.serietemp.models.Serie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,16 @@ public class SerieService implements ISerieService {
     @Autowired
     private JdbcTemplate jdbctemp;
 
+    private String mapUpdateNullColumn(String column, Object object) {
+        return object != null ? column+"='"+object+"'," : "";
+    }
+
+    private String mapInsertNullColumn(Object object) {
+        return object != null ? "'"+object+"'" : null;
+    }
+
     @Override
+    @Cacheable("series")
     public List<Serie> getAll() {
         String req = "SELECT * FROM SERIES";
         List<Serie> series = jdbctemp.query(req, new BeanPropertyRowMapper(Serie.class));
@@ -22,6 +32,7 @@ public class SerieService implements ISerieService {
     }
 
     @Override
+    @Cacheable("serie")
     public Serie findById(Long id){
         String req = "SELECT * FROM SERIES WHERE ID=?";
         Serie serie = (Serie) jdbctemp.queryForObject(req, new Object[]{id},
@@ -30,8 +41,8 @@ public class SerieService implements ISerieService {
     }
 
     @Override
-    public void insertSerie(String title, String description){
-        String req = "INSERT INTO SERIES (TITLE, DESCRIPTION) VALUES ("+title+","+description +")";
+    public void insertSerie(String title, String description, Long userid){
+        String req = "INSERT INTO SERIES (TITLE, DESCRIPTION, USERID) VALUES ("+this.mapInsertNullColumn(title)+","+this.mapInsertNullColumn(description)+","+userid+")";
         jdbctemp.execute(req);
     }
 
@@ -43,18 +54,15 @@ public class SerieService implements ISerieService {
 
     @Override
     public void editSerie(Long id, String title, String description){
-        String req = "UPDATE SERIES SET TITLE="+title+", DESCRIPTION="+description+" WHERE ID="+id;
-
-        if(title != null && description==null) {
-            req = "UPDATE SERIES SET TITLE="+title+" WHERE ID="+id;
-        }
-        else if (title == null && description!=null) {
-            req = "UPDATE SERIES SET DESCRIPTION="+description+" WHERE ID="+id;
-        }
+        String parsed = (this.mapUpdateNullColumn("TITLE",title) +
+                        this.mapUpdateNullColumn("DESCRIPTION",description));
+        String req = "UPDATE SERIES SET " +parsed.substring(0, parsed.length() - 1) +
+                "WHERE ID="+id;
         jdbctemp.execute(req);
     }
 
     @Override
+    @Cacheable("events")
     public List<Event> getEvents(Long id) {
         String req = "SELECT * FROM EVENTS WHERE SERIEID=" +id;
         List<Event> events = jdbctemp.query(req, new BeanPropertyRowMapper(Event.class));

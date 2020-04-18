@@ -8,7 +8,7 @@ import java.util.List;
 public interface ISerieService {
     public List<Serie> getAll();
     public Serie findById(Long Id);
-    public void insertSerie(String title, String description);
+    public void insertSerie(String title, String description, Long userid);
     public void removeSerie(Long id);
     public void editSerie(Long id, String title, String description);
     public List<Event> getEvents(Long id);

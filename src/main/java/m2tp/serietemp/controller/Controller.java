@@ -1,10 +1,9 @@
 package m2tp.serietemp.controller;
 
+import java.util.Date;
 import java.util.List;
-
-import m2tp.serietemp.models.Comment;
-import m2tp.serietemp.models.Event;
-import m2tp.serietemp.models.Serie;
+import java.sql.Timestamp;
+import m2tp.serietemp.models.*;
 import m2tp.serietemp.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,10 @@ public class Controller {
     private IEventService eventService;
 
     @Autowired
-    private ICommentService commentService;
+    private ITagService tagService;
+
+    @Autowired
+    private IUserService userService;
 
     @RequestMapping("/series")
     public List<Serie> findSeries(){
@@ -32,7 +34,7 @@ public class Controller {
 
     @PostMapping(path = "/series", consumes = "application/json", produces = "application/json")
     public void addSerie(@RequestBody Serie serie){
-        serieService.insertSerie(serie.getTitle(),serie.getDescription());
+        serieService.insertSerie(serie.getTitle(),serie.getDescription(),serie.getUserid());
     }
 
     @DeleteMapping(path = "/series/{id}")
@@ -57,7 +59,10 @@ public class Controller {
 
     @PostMapping(path = "/events", consumes = "application/json", produces = "application/json")
     public void addEvent(@RequestBody Event event){
-        eventService.insertEvent(event.getSerieId(),event.getMoment(),event.getDescription(),event.getTag());
+        eventService.insertEvent(event.getSerieId(),
+                event.getMoment(),
+                event.getRecord(),
+                event.getComment());
     }
 
     @DeleteMapping(path = "/events/{id}")
@@ -67,36 +72,63 @@ public class Controller {
 
     @PutMapping(path = "/events/{id}", consumes = "application/json", produces = "application/json")
     public void editEvent(@PathVariable Long id, @RequestBody Event event){
-        eventService.editEvent(id,event.getDescription(),event.getTag());
+        eventService.editEvent(id,event.getRecord(), event.getComment());
     }
 
-    @RequestMapping(path = "/comments")
-    public List<Comment> findComments () {
-        return commentService.getAll();
+    @RequestMapping(path = "/tags")
+    public List<Tag> findTags () {
+        return tagService.getAll();
     }
 
-    @RequestMapping(path = "/comments/{id}")
-    public Comment findComment (@PathVariable Long id) {
-        return commentService.findById(id);
+    @RequestMapping(path = "/tags/all/{eventId}")
+    public List<Tag> findTags (@PathVariable Long eventId) {
+        return tagService.getEventAll(eventId);
     }
 
-    @PostMapping(path = "/comments", consumes = "application/json", produces = "application/json")
-    public void addComment (@RequestBody Comment comment) {
-        commentService.addComment(comment.getText(), comment.getEventId());
+    @RequestMapping(path = "/tags/{id}")
+    public List<Tag> findTag (@PathVariable Long id) {
+        return tagService.findById(id);
     }
 
-    @DeleteMapping(path = "/comments/{id}")
-    public void removeComment (@PathVariable Long id) {
-        commentService.deleteComment(id);
+    @PostMapping(path = "/tags", consumes = "application/json", produces = "application/json")
+    public void addTag (@RequestBody Tag tag) {
+        tagService.addTag(tag.getVal(), tag.getEventId());
+    }
+
+    @DeleteMapping(path = "/tags/{id}")
+    public void removeTag (@PathVariable Long id) {
+        tagService.deleteTag(id);
+    }
+
+    @DeleteMapping(path = "/tags/all/{eventId}")
+    public void removeAllTags (@PathVariable Long eventId) {
+        tagService.deleteAllTags(eventId);
     }
 
     @RequestMapping(path = "series/{id}/events")
     public List<Event> getSerieEvents(@PathVariable Long id) {
         return serieService.getEvents(id);
     }
-    
-    @RequestMapping(path = "events/{id}/comments")
-    public List<Comment> getEventComments(@PathVariable Long id) {
-        return eventService.getComments(id);
+
+    @RequestMapping(path = "/users")
+    public List<User> getAllUsers(@RequestParam(name = "name", required = false) String name) {
+        if(name != null)
+            return userService.findByUserName(name);
+        return userService.getAll();
+    }
+
+    @RequestMapping(path = "/users/{id}")
+    public List<User> getUserById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
+    @RequestMapping(path = "/users/{id}/series")
+    public List<Serie> getUserSeries (@PathVariable Long id){
+        return userService.getSeries(id);
+    }
+
+    @PostMapping(path = "/users", consumes = "application/json", produces = "application/json")
+    public void creatUser(@RequestBody User user) {
+        userService.createUser(user.getUsername(), user.getPassword());
     }
 }
