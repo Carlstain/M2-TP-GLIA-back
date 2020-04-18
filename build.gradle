@@ -4,6 +4,9 @@ plugins {
     id 'java'
 }
 
+springBoot {
+    mainClassName = 'Main'
+}
 group = 'm2tp'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
