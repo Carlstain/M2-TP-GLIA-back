@@ -29,7 +29,7 @@ public class CommentService implements ICommentService{
 
     @Override
     public void addComment(String text, Long eventId){
-        String req = "INSERT INTO COMMENTS (TEXT, EVENTID) VALUES ("+text+","+eventId+")";
+        String req = "INSERT INTO COMMENTS (TEXT, EVENTID) VALUES ('"+text+"',"+eventId+")";
         jdbctemp.execute(req);
     }
 
