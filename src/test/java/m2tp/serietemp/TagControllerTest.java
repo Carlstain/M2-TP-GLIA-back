@@ -46,17 +46,6 @@ public class TagControllerTest {
     }
 
     @Test
-    public void addTagScope() throws  Exception {
-        Tag tag = new Tag();
-        tag.setEventId((long) 1);
-        tag.setVal("tagtest");
-        MvcResult result = this.mockMvc.perform(post("/tags")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(toJsonString(tag))).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(201, 400);
-    }
-
-    @Test
     public void deleteTagScope() throws  Exception {
         MvcResult result = this.mockMvc.perform(delete("/tags/1")).andReturn();
         assertThat(result.getResponse().getStatus()).isIn(200, 404);

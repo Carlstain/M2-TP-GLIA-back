@@ -41,8 +41,6 @@ public class EventControllerTest {
     public void findEventScope() throws Exception {
         MvcResult result = this.mockMvc.perform(get("/events")).andReturn();
         assertThat(result.getResponse().getStatus()).isIn(200, 204);
-        MvcResult result2 = this.mockMvc.perform(get("/events/1")).andReturn();
-        assertThat(result2.getResponse().getStatus()).isIn(200, 404);
         MvcResult result3 = this.mockMvc.perform(get("/series/1/events")).andReturn();
         assertThat(result3.getResponse().getStatus()).isIn(200, 204);
     }

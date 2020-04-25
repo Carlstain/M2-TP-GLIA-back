@@ -40,8 +40,6 @@ public class SerieControllerTest {
     public void getSeriesScope() throws Exception {
         MvcResult result = this.mockMvc.perform(get("/series")).andReturn();
         assertThat(result.getResponse().getStatus()).isIn(200, 204);
-        result = this.mockMvc.perform(get("/series/1")).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(200, 404);
     }
 
     @Test
