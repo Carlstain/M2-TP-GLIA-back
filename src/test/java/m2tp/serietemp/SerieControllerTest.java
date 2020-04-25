@@ -47,13 +47,13 @@ public class SerieControllerTest {
     @Test
     public void getSeriesMeScope() throws Exception {
         MvcResult result = this.mockMvc.perform(get("/series/me")).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(200, 204, 401);
+        assertThat(result.getResponse().getStatus()).isIn(200, 204, 401, 404);
     }
 
     @Test
     public void getSeriesSharedScope() throws Exception {
         MvcResult result = this.mockMvc.perform(get("/series/shared")).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(200, 204, 401);
+        assertThat(result.getResponse().getStatus()).isIn(200, 204, 401, 404);
     }
 
     @Test
@@ -63,14 +63,14 @@ public class SerieControllerTest {
                 post("/series")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJsonString(serie))).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(201, 401, 400);
+        assertThat(result.getResponse().getStatus()).isIn(201, 401, 400, 404);
     }
 
     @Test
     public void deleteSerieScope() throws Exception {
         MvcResult result = this.mockMvc.perform(
                 delete("/series/1")).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(200, 401, 403);
+        assertThat(result.getResponse().getStatus()).isIn(200, 401, 403, 404);
     }
 
     @Test
@@ -80,6 +80,6 @@ public class SerieControllerTest {
                 put("/series/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJsonString(serie))).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(200, 401, 403);
+        assertThat(result.getResponse().getStatus()).isIn(200, 401, 403, 404);
     }
 }
