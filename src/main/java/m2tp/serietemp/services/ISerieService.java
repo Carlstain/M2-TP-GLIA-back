@@ -2,6 +2,7 @@ package m2tp.serietemp.services;
 
 import m2tp.serietemp.models.Event;
 import m2tp.serietemp.models.Serie;
+import m2tp.serietemp.models.SharedSerie;
 
 import java.util.List;
 
@@ -13,4 +14,5 @@ public interface ISerieService {
     public void removeSerie(Long id);
     public void editSerie(Long id, String title, String description);
     public List<Event> getEvents(Long id);
+    public List<Serie> getSharedme(List<SharedSerie> sharedSeries);
 }

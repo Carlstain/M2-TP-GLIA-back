@@ -1,12 +1,13 @@
 package m2tp.serietemp.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import m2tp.serietemp.models.Event;
 import m2tp.serietemp.models.Serie;
+import m2tp.serietemp.models.SharedSerie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -79,5 +80,12 @@ public class SerieService implements ISerieService {
         String req = "SELECT * FROM EVENTS WHERE SERIEID=" +id;
         List<Event> events = jdbctemp.query(req, new BeanPropertyRowMapper(Event.class));
         return events;
+    }
+
+    @Override
+    public List<Serie> getSharedme(List<SharedSerie> sharedSeries) {
+        List<Serie> series = this.getAll();
+        series.removeIf(serie -> sharedSeries.stream().noneMatch(sharedSerie -> serie.getId().equals(sharedSerie.getSerieId())));
+        return series;
     }
 }

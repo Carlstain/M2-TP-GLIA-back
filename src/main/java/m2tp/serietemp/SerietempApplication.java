@@ -5,10 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -16,7 +18,8 @@ import java.util.Collections;
 
 @Configuration
 @EnableCaching
-@SpringBootApplication
+@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@EnableEurekaClient
 public class SerietempApplication {
 
     // Fix the CORS errors
@@ -35,8 +38,14 @@ public class SerietempApplication {
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
     }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+
     public static void main(String[] args) {
-        System.setProperty("spring.config.name", "serietemp");
         SpringApplication.run(SerietempApplication.class, args);
     }
 }
