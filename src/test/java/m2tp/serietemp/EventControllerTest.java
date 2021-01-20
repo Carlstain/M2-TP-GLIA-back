@@ -41,8 +41,6 @@ public class EventControllerTest {
     public void findEventScope() throws Exception {
         MvcResult result = this.mockMvc.perform(get("/events")).andReturn();
         assertThat(result.getResponse().getStatus()).isIn(200, 204);
-        MvcResult result2 = this.mockMvc.perform(get("/events/1")).andReturn();
-        assertThat(result2.getResponse().getStatus()).isIn(200, 404);
         MvcResult result3 = this.mockMvc.perform(get("/series/1/events")).andReturn();
         assertThat(result3.getResponse().getStatus()).isIn(200, 204);
     }
@@ -58,14 +56,14 @@ public class EventControllerTest {
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJsonString(event))).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(201, 400, 401, 403);
+        assertThat(result.getResponse().getStatus()).isIn(201, 400, 401, 403, 404);
     }
 
     @Test
     public void deleteEventScope() throws Exception {
         MvcResult result = this.mockMvc.perform(
                 delete("/events/id")).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(201, 400, 401, 403);
+        assertThat(result.getResponse().getStatus()).isIn(201, 400, 401, 403, 404);
     }
 
     @Test
@@ -76,7 +74,6 @@ public class EventControllerTest {
                 put("/events/id")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJsonString(event))).andReturn();
-        assertThat(result.getResponse().getStatus()).isIn(200, 401, 403, 400);
+        assertThat(result.getResponse().getStatus()).isIn(200, 401, 403, 400, 404);
     }
-
 }
