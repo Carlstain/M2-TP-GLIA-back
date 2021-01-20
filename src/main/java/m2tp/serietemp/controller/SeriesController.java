@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
@@ -36,7 +37,12 @@ public class SeriesController {
 
     @RequestMapping("/series/me")
     public List<Serie> findSeriesMe(){
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user = null;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
         List<Serie> series =  serieService.getUserSeries(user.getId());
@@ -48,11 +54,20 @@ public class SeriesController {
     @RequestMapping("/series/shared")
     public List<Serie> findSeriesSharedMe(){
         ResponseEntity<SharedSerie[]> responseEntity;
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
+        try {
+            responseEntity = restTemplate.getForEntity("http://localhost:8002/share/"+user.getId(), SharedSerie[].class);
+        }catch(ResourceAccessException e){
+            throw new NotFoundException();
+        }
 
-        responseEntity = restTemplate.getForEntity("http://localhost:8002/share/"+user.getId(), SharedSerie[].class);
 
         SharedSerie[] shared = responseEntity.getBody();
         assert shared != null;
@@ -70,7 +85,12 @@ public class SeriesController {
 
     @PostMapping(path = "/series", consumes = "application/json", produces = "application/json")
     public void addSerie(@RequestBody @Valid Serie serie){
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
         if (serie.getTitle() == null)
@@ -82,7 +102,12 @@ public class SeriesController {
 
     @DeleteMapping(path = "/series/{id}")
     public void deleteSerie(@PathVariable Long id){
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
         Serie serie = serieService.findById(id);
@@ -93,7 +118,12 @@ public class SeriesController {
 
     @PutMapping(path = "/series/{id}", consumes = "application/json", produces = "application/json")
     public void editSerie(@RequestBody Serie serie, @PathVariable Long id) {
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
         Serie toedit = serieService.findById(id);

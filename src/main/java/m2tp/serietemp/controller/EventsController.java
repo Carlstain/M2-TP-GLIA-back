@@ -10,6 +10,7 @@ import m2tp.serietemp.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -39,7 +40,12 @@ public class EventsController {
 
     @PostMapping(path = "/events", consumes = "application/json", produces = "application/json")
     public void addEvent(@RequestBody Event event){
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
         else if (event.getSerieId() == null || event.getRecord() == null)
@@ -56,7 +62,12 @@ public class EventsController {
 
     @DeleteMapping(path = "/events/{id}")
     public void removeEvent(@PathVariable Long id){
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
         Event event = eventService.findById(id);
@@ -68,7 +79,12 @@ public class EventsController {
 
     @PutMapping(path = "/events/{id}", consumes = "application/json", produces = "application/json")
     public void editEvent(@PathVariable Long id, @RequestBody Event event){
-        User user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        User user;
+        try {
+            user = restTemplate.getForObject("http://localhost:8002/authenticated", User.class);
+        }catch (ResourceAccessException e){
+            throw new NotFoundException();
+        }
         if (user == null)
             throw new RequestUnauthorizedException();
         Serie serie = serieService.findById(id);
